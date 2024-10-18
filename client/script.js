@@ -1,3 +1,5 @@
+
+
 const wrapper = document.querySelector('.wrapper');
 const registerLink = document.querySelector('.register-link');
 const loginLink = document.querySelector('.login-link');
@@ -121,7 +123,7 @@ async function otp_verification(event) {
     console.log("strdata", strdata);
 
     try {
-        let response = await fetch('/verify_otp', {
+        let response = await fetch(`/verify_otp?email${email}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -138,7 +140,8 @@ async function otp_verification(event) {
         
         if(response.status === 200){
             alert('otp verified succesfully');
-            window.location = ``
+            window.location = `user.html?email=${email}`
+            
         }
         else if(parsed_Response.message === 'Invalid OTP'){
             alert('Invalid otp');
@@ -193,20 +196,24 @@ async function login(event){
         let data = parsed_Response.data;
         console.log("data",data);
 
-        let token = data.token;
-        console.log("token : ",token);
+        // let token = data.token;
+        // console.log("token : ",token);
 
-        let id = data._id
-        console.log("id",id);
+        // let id = data._id
+        // console.log("id",id);
 
-        let token_key = id
+        // let token_key = id
 
-        localStorage.setItem(token_key,token);
+        // localStorage.setItem(token_key,token);
 
 
         if(response.status === 200){
             alert("user login successfull");
-            window.location = `user.html?id=${id}&login=${token_key}`
+            window.location = `user.html?email=${email}`
+        }
+        if(parsed_Response.data === null){
+            alert('Verify the email')
+            window.location = `email-verify.html`
         }
     } catch (error) {
         console.log("error",error)
@@ -216,17 +223,15 @@ async function login(event){
 async function userProfile(){
     let params = new URLSearchParams(window.location.search);
 
-    let id = params.get('id');
-    let token_key = params.get('login')
-
-    let token = localStorage.getItem(token_key);
-    console.log("token",token);
+    let email = params.get('email')
+    console.log("email",email)
 
     try {
-        let response = await fetch(`/getuser/${id}`,{
+        let response = await fetch(`/getuser/${email}`,{
             method : "GET",
             headers : {
-                'Authorization' : `Bearer ${token}`,
+                'Content-Type' : 'application/json'
+               
             },
 
         });

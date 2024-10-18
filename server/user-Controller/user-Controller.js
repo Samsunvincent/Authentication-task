@@ -122,9 +122,10 @@ exports.verify_otp = async function(req,res){
 exports.singleUser = async function(req,res){
 
     try {
-        let id = req.params.id;
+        let email = req.params.email;
+        console.log("email",email)
 
-        let check_user = await user.findOne({_id : id});
+        let check_user = await user.findOne({email : email});
         console.log("check_user",check_user);
 
         let response = success_function({
